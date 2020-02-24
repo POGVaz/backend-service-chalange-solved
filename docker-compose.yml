@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+      database:
+            container_name: Postgres
+            image: postgres
+            env_file:
+                  - environment.env
+            ports:
+                  - 5432:5432
+
+      broker:
+            container_name: Rabbitmq
+            image: rabbitmq
+            env_file:
+                  - environment.env
+            ports:
+                  - 5672:5672
+
+      web_service:
+            container_name: Django_app
+            build: .
+            command: python ./src/manage.py runserver 0.0.0.0:8000
+            volumes:
+                  - .:/src
+            env_file:
+                  - environment.env
+            ports:
+                  - "8000:8000"
+            links:
+                  - broker
+            depends_on:
+                  - database
+                  - broker
+
+      worker:
+            container_name: Celery
+            build: .
+            command: bash -c "cd /src && celery -A requestLocationHandler worker -l info"
+            volumes:
+                  - .:/src
+            env_file:
+                  - environment.env
+            links:
+                  - broker
+            depends_on:
+                  - database
+                  - broker
+                  - web_service
