@@ -27,7 +27,7 @@ class Address(models.Model):
       latitude = models.DecimalField(decimal_places=6, max_digits=9)
       longitude = models.DecimalField(decimal_places=6, max_digits=9)
 
-      def __str__(self):decimal_places
+      def __str__(self):
           return '{city} - {street}'.format(city=self.city_text, street=self.street_text)
 
 class Answer(models.Model):
