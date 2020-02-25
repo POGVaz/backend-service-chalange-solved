@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class PosthandlerConfig(AppConfig):
+class PostHandlerConfig(AppConfig):
     name = 'postHandler'
