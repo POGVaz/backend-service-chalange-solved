@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 from unittest.mock import patch
 
 from .models import User, Address, Answer
-from .tasks import shared_task
+from .tasks import fetch_location
 
 example_post_OK = {
 	"user_info": {
