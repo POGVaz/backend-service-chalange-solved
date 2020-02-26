@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'postHandler.apps.PostHandlerConfig',
-    'locationFetcher.apps.LocationFetcherConfig',
 ]
 
 MIDDLEWARE = [

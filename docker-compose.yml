@@ -20,7 +20,7 @@ services:
     web_service:
         container_name: Django_app
         build: .
-        command: python ./src/manage.py runserver 0.0.0.0:8000
+        command: python manage.py runserver 0.0.0.0:8000
         volumes:
             - .:/src
         env_file:

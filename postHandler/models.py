@@ -24,8 +24,8 @@ class Address(models.Model):
 	uf_code = models.CharField(max_length=200)
 	zip_code = models.CharField(max_length=200)
 
-	latitude = models.DecimalField(decimal_places=6, max_digits=9)
-	longitude = models.DecimalField(decimal_places=6, max_digits=9)
+	latitude = models.DecimalField(decimal_places=6, max_digits=9, null=True)
+	longitude = models.DecimalField(decimal_places=6, max_digits=9, null=True)
 
 	def __str__(self):
 		return '{city} - {street}'.format(city=self.city_text, street=self.street_text)
