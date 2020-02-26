@@ -109,7 +109,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 CELERY = {
     'BROKER_URL': os.environ['CELERY_BROKER'],
-    # 'CELERY_IMPORTS': ('worker.tasks', ),
     'CELERY_TASK_SERIALIZER': 'json',
     'CELERY_RESULT_SERIALIZER': 'json',
     'CELERY_ACCEPT_CONTENT': ['json'],

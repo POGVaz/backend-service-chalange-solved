@@ -1,8 +1,10 @@
 from django.db import models
 
+# TODO: Update fields properties (max_length, null, ...) to comply more closely to requirements
+
 class User(models.Model):
 	'''
-		User.
+		User data.
 	'''
 	name_text = models.CharField(max_length=200)
 	email_text = models.EmailField()
@@ -13,7 +15,7 @@ class User(models.Model):
 
 class Address(models.Model):
 	'''
-		Address.
+		Address data.
 		Each user can have many addresses.
 	'''
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -24,6 +26,7 @@ class Address(models.Model):
 	uf_code = models.CharField(max_length=200)
 	zip_code = models.CharField(max_length=200)
 
+	# Values to be updated after creation by the celery worker:
 	latitude = models.DecimalField(decimal_places=6, max_digits=9, null=True)
 	longitude = models.DecimalField(decimal_places=6, max_digits=9, null=True)
 

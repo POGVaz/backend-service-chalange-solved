@@ -3,11 +3,16 @@ from celery import shared_task
 import googlemaps
 
 # This won't work without a proper key.
+# Use this if you have a proper key!
 # google_client = googlemaps.Client()
 
 #Fake client for google API, since we don't have a key:
 class FakeClient:
     def geocode(self):
+        '''
+        Should not be called.
+        Should either be mocked on tests or replaced with a real call.
+        '''
         print("Fake API call")
 google_client = FakeClient()
 
@@ -24,7 +29,7 @@ def fetch_location(address_id, street, city, state):
     address_to_update.longitude = result_longitude
     address_to_update.save()
 
-# geocode result exemple:
+# geocode result example:
 # [
 #   {'address_components': [
 #       {

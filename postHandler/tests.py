@@ -10,37 +10,40 @@ import json
 from .models import User, Address, Answer
 from .tasks import fetch_location
 
-example_post_OK = {
-	"user_info": {
-		"phone": "(11) 98765-4321",
-		"name": "João da Silva",
-		"email": "joao_silva@exemplo.com"
-	},
-	"address_attributes": {
-		"city": "São Paulo",
-		"neighborhood": "Jardim Paulista",
-		"street": "Avenida São Gabriel",
-		"uf": "SP",
-		"zip_code": "01435-001"
-	},
-	"request_info": {
-		"question1": "answer1",
-		"question2": "answer2",
-		"question3": "answer3"
-	}
-}
 
 class UserAddressViewTest(TestCase):
 
 	def setUp(self):
+		# Each test needs a client
 		self.client = Client()
 
+	# Mock celery task.
 	@patch("postHandler.tasks.fetch_location.delay")
 	def test_post_OK_request(self, mock_location_fetcher_task):
 		'''
 		If a post request is made, save user, address and answer data to database
 		and create a celery task to retrieve that address location data.
 		'''
+
+		example_post_OK = {
+			"user_info": {
+				"phone": "(11) 98765-4321",
+				"name": "João da Silva",
+				"email": "joao_silva@exemplo.com"
+			},
+			"address_attributes": {
+				"city": "São Paulo",
+				"neighborhood": "Jardim Paulista",
+				"street": "Avenida São Gabriel",
+				"uf": "SP",
+				"zip_code": "01435-001"
+			},
+			"request_info": {
+				"question1": "answer1",
+				"question2": "answer2",
+				"question3": "answer3"
+			}
+		}
 
 		# Send the post request:
 		response = self.client.post(
@@ -81,6 +84,7 @@ class UserAddressViewTest(TestCase):
 
 class FetchLocationTaskTest(TestCase):
 
+	# Mock Google Maps API.
 	@patch('postHandler.tasks.google_client.geocode')
 	def test_fetch_example_location(self, mocked_geocode):
 		mocked_geocode.return_value = [{"geometry": {"location": {"lat": 12.345678,"lng": 87.654321}}}]
@@ -92,7 +96,7 @@ class FetchLocationTaskTest(TestCase):
 		created_address.save()
 
 		# Emit the task:
-		location_result = fetch_location(address_id=created_address.id, street="Avenida São Gabriel", city="São Paulo", state="SP")
+		fetch_location(address_id=created_address.id, street="Avenida São Gabriel", city="São Paulo", state="SP")
 
 		# Check if the google API was called:
 		mocked_geocode.assert_called_with("Avenida São Gabriel, São Paulo, SP")
@@ -101,3 +105,8 @@ class FetchLocationTaskTest(TestCase):
 		created_address.refresh_from_db()
 		self.assertEqual(created_address.latitude, Decimal("12.345678"))
 		self.assertEqual(created_address.longitude, Decimal("87.654321"))
+
+	# TODO: Add more tests, including exception on using Google Maps API.
+		# IDEA: Get location with other parameters.
+		# IDEA: Can't reach Google Maps API.
+		# IDEA: Error on Google Maps API response.
